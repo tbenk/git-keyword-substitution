@@ -1,0 +1,108 @@
+introduction
+============
+
+"keywords" is a git filter which replaces certain keywords on checkout,
+resp. restores the keywords on commit.
+
+
+prerequisites
+=============
+
+at least git version v1.7.3.4-599-ga2b665d is needed for this filter.
+
+
+installation
+============
+
+$ vi <PROJECT>/.gitattributes 
+---<snip>---
+*.c filter=keywords
+---<snap>---
+
+$ mkdir <PROJECT>/.git_filters/keywords
+$ cp keywords <PROJECT>/.git_filters/keywords
+
+to enable keyword substitution:
+$ git config --local filter.keywords.clean ".git_filters/keywords -m clean -f %f"
+$ git config --local filter.keywords.smudge ".git_filters/keywords -m smudge -f %f"
+
+to disable keyword substitution:
+$ git config --local filter.keywords.smudge "cat"
+
+
+usage
+=====
+
+any occurence of a keyword will be replaced by its value except for lines matching
+the following regular expression: /SkIp/
+
+for example the text
+
+---<snip>---
+Author:     <AUTHORNAME>
+Email:      <AUTHOREMAIL>
+---<snap>---
+
+will become on checkout
+
+---<snip>---
+Author:     Timo Benk
+Email:      benk@b1-systems.de
+---<snap>---
+
+for an example look at the header in "keywords".
+
+the keywords will not be updated automatically on checkout. to initiate the
+keyword substitution, all files must be deleted beforehand.
+
+$ cd <PROJECT>
+$ rm -rf *
+$ git checkout .
+
+
+available keywords
+==================
+
+lines matching /SkIp/ will not be touched.
+
+<FILE>                       : the filename                                        
+<COMMITHASH>                 : commit hash                                         
+<COMMITHASHABBREVIATED>      : abbreviated commit hash                             
+<TREEHASH>                   : tree hash                                           
+<TREEHASHABBREVIATED>        : abbreviated tree hash                               
+<PARENTHASHES>               : parent hashes                                       
+<PARENTHASHESABBREVIATED>    : abbreviated parent hashes                           
+<AUTHORNAME>                 : author name                                         
+<AUTHORNAMEMAILCAP>          : author name (respecting .mailmap)                   
+<AUTHOREMAIL>                : author email                                        
+<AUTHOREMAILMAILCAP>         : author email (respecting .mailmap)                  
+<AUTHORDATE>                 : author date (format respects --date= option)        
+<AUTHORDATERFC2822>          : author date, RFC2822 style                          
+<AUTHORDATERELATIVE>         : author date, relative                               
+<AUTHORDATEUNIX>             : author date, UNIX timestamp                         
+<AUTHORDATEISO8601>          : author date, ISO 8601 format                        
+<COMMITTERNAME>              : committer name                                      
+<COMMITTERNAMEMAILCAP>       : committer name (respecting .mailmap)                
+<COMMITTERDATE>              : committer date                                      
+<COMMITTERDATERFC2822>       : committer date, RFC2822 style                       
+<COMMITTERDATERELATIVE>      : committer date, relative                            
+<COMMITTERDATEUNIX>          : committer date, UNIX timestamp                      
+<COMMITTERDATEISO8601>       : committer date, ISO 8601 format                     
+<REFNAMES>                   : ref names, like the --decorate option of git-log(1) 
+<ENCODING>                   : encoding                                            
+<SUBJECT>                    : subject                                             
+<SUBJECTSANITIZED>           : sanitized subject line, suitable for a filename     
+<REFLOGSELECTOR>             : reflog selector, e.g., refs/stash@{1}               
+<REFLOGSELECTORSHORT>        : shortened reflog selector, e.g., stash@{1}          
+<REFLOGIDENTITYNAME>         : reflog identity name                                
+<REFLOGIDENTITYNAMEMAILCAP>  : reflog identity name (respecting .mailmap)          
+<REFLOGIDENTITYEMAIL>        : reflog identity email                               
+<REFLOGIDENTITYEMAILMAILCAP> : reflog identity email (respecting .mailmap)         
+<REFLOGSUBJECTS>             : reflog subject                                      
+
+<CHANGELOG:$args:$max:$format> : the git history of this file
+- $args   - additional arguments supplied to "git log"               
+- $max    - maximum number of log entries to show (-1 == all entries)
+- $format - format of the log message (man git-log / --pretty)
+- all characters prefixing <CHANGELOG:$args:$max:$format> will be repeated 
+  on each line

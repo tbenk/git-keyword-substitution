@@ -1,0 +1,10 @@
+the last line of each commit message must start with "tags: " followed
+by one or more of the following tags, separated by whitespace.
+
+eg: "tags: relevant restructuring"
+
+available tags: 
+
+relevant      - code relevant commits
+documentation - comment/documentation changes
+restructuring - file/directory renaming
