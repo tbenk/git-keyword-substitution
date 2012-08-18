@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+
+my $file_mesg = $ARGV[0];
+my $file_tags = ".tags";
+
+open FILE_TAGS, $file_tags or die( "$file_mesg: $!");
+open FILE_MESG, $file_mesg or die( "$file_tags: $!");
+
+my @file_tags = <FILE_TAGS>;
+my @file_mesg = grep { not /^#/ } <FILE_MESG>;
+
+my @tags = grep { /([^\s]*)\s*-\s*/ } @file_tags;
+my @tags = map  { /([^\s]*)\s*-\s*/ ? $1 : undef } @tags;
+
+my $rex = "^tags:(\\s+" . join( "\\s*|\\s+", @tags ) . ")+\\s*\$";
+
+if ( not $file_mesg[-1] =~ /$rex/ ) {
+
+    print "error: commit aborted!\n\n";
+    print join( "", @file_tags );
+   
+    exit( 1 );
+}
