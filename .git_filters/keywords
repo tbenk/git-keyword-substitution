@@ -123,7 +123,7 @@ sub meta {
         $format .= "$k=$v%n";
     }
 
-    my $log = `git log -n 1 --pretty="$format" -- "$_path" 2>/dev/null`;
+    my $log = `git log -g -n 1 --pretty="$format" -- "$_path" 2>/dev/null`;
     return if ( not $log );
 
     my $meta= {};
