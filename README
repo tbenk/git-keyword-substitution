@@ -52,12 +52,11 @@ Email:      benk@b1-systems.de
 
 for an example look at the header in "keywords".
 
-the keywords will not be updated automatically on checkout. to initiate the
-keyword substitution, all files must be deleted beforehand.
+to update all keywords on checkout, just checkout the current
+HEAD explicitly.
 
 $ cd <PROJECT>
-$ rm -rf *
-$ git checkout .
+$ git checkout HEAD .
 
 
 available keywords
