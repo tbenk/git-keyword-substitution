@@ -117,16 +117,22 @@ sub meta {
     my $_keywords = shift; # SkIp
     my $_path     = shift;
 
+    my $meta= {};
+
     my $format = "";
     while ( my ( $k, $v ) = each( %{ $_keywords } ) ) { # SkIp
 
         $format .= "$k=$v%n";
     }
 
-    my $log = `git log -g -n 1 --pretty="$format" -- "$_path" 2>/dev/null`;
+    my $branch =  `git branch | awk '/*/ {print \$2}'`;
+    chomp( $branch );
+
+    $meta->{BRANCH} = $branch;
+
+    my $log = `git log -g -n 1 --pretty="$format" "$branch" -- "$_path" 2>/dev/null`;
     return if ( not $log );
 
-    my $meta= {};
     foreach my $entry ( split( /\n/, $log ) ) {
 
         

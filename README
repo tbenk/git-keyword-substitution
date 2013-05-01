@@ -65,6 +65,7 @@ available keywords
 lines matching /SkIp/ will not be touched.
 
 <FILE>                       : the filename                                        
+<BRANCH>                     : the branch name
 <COMMITHASH>                 : commit hash                                         
 <COMMITHASHABBREVIATED>      : abbreviated commit hash                             
 <TREEHASH>                   : tree hash                                           
