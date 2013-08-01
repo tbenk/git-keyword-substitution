@@ -301,7 +301,7 @@ sub main {
     } else {
 
         open ( FILE, $config->{file} ) or die( "Couldn't open file: $!" ); 
-        $curr = join( "", <FILE> ); 
+        $curr = join( "", <FILE> ); # SkIp
         close FILE;
     }
 
