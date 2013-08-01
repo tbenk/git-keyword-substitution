@@ -125,7 +125,7 @@ sub meta {
         $format .= "$k=$v%n";
     }
 
-    my $branch =  `git branch | awk '/*/ {print \$2}'`;
+    my $branch =  `git branch | awk '/\\*/ {print \$2}'`;
     chomp( $branch );
 
     $meta->{BRANCH} = $branch;
@@ -219,7 +219,6 @@ sub smudge {
 
         next if ( $curr[$idx] =~ /SkIp/ );
 
-
         if ( $curr[$idx] =~ /(.*)<CHANGELOG:([^:]*):([^:]*):([^>]*)>/ ) { # SkIp
 
             $curr[$idx] = history( $_path, $2, $3, $4, $1 );
@@ -295,13 +294,23 @@ sub main {
 
     parse_commandline();
 
-    my $curr = join( "", <STDIN>);
-    my $prev = `git cat-file blob HEAD:$config->{file} 2>&1`;
+    my $curr = undef;
+    if (not -t STDIN) {
+    
+        $curr = join( "", <STDIN> );
+    } else {
+
+        open ( FILE, $config->{file} ) or die( "Couldn't open file: $!" ); 
+        $curr = join( "", <FILE> ); 
+        close FILE;
+    }
 
     if ( $config->{mode} =~ /smudge/i ) {
 
         print smudge( $config->{KEYWORDS}, $config->{file}, $curr ); 
     } else {
+
+        my $prev = `git cat-file blob HEAD:$config->{file} 2>&1`;
 
         print clean( $config->{KEYWORDS}, $config->{file}, $prev, $curr ); 
     }
